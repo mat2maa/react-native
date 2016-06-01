@@ -106,6 +106,29 @@
   XCTAssertTrue(CGRectEqualToRect([rightView measureLayoutRelativeToAncestor:self.parentView], CGRectMake(330, 120, 100, 200)));
 }
 
+- (void)testAncestorCheck
+{
+  RCTShadowView *centerView = [self _shadowViewWithStyle:^(css_style_t *style) {
+    style->flex = 1;
+  }];
+  
+  RCTShadowView *mainView = [self _shadowViewWithStyle:^(css_style_t *style) {
+    style->flex = 1;
+  }];
+  
+  [mainView insertReactSubview:centerView atIndex:0];
+
+  RCTShadowView *footerView = [self _shadowViewWithStyle:^(css_style_t *style) {
+    style->flex = 1;
+  }];
+  
+  [self.parentView insertReactSubview:mainView atIndex:0];
+  [self.parentView insertReactSubview:footerView atIndex:1];
+  
+  XCTAssertTrue([centerView viewIsDescendantOf:mainView]);
+  XCTAssertFalse([footerView viewIsDescendantOf:mainView]);
+}
+
 - (void)testAssignsSuggestedWidthDimension
 {
   [self _withShadowViewWithStyle:^(css_style_t *style) {
